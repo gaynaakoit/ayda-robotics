@@ -1,155 +1,108 @@
-<p align="center">  
-<a href="https://nestjs.com/" target="_blank">  
-  <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="NestJS Logo" />  
-</a>  
-</p>
+# AYDA Robotics
 
-<h1 align="center">Backend API – Ayda</h1>
-
-<p align="center">
-  🚀 Backend API construite avec <strong>NestJS</strong> pour l’application <strong>Ayda</strong> — scalable, maintenable et testable.
-</p>
+AYDA Robotics est un projet regroupant plusieurs applications pour la détection d'événements et la visualisation en temps réel.  
+Le projet inclut un **frontend Angular** et un **backend NestJS** avec WebSocket pour la communication en temps réel.
 
 ---
 
-## 🧩 Description
+## Structure du repository
 
-Ce dépôt contient le **backend de l’application Ayda**, développé avec **NestJS (TypeScript)**.  
-Il fournit une **API REST** pour gérer les fonctionnalités principales de l’application (authentification, utilisateurs, données métiers, etc.), avec une architecture modulaire et des bonnes pratiques intégrées.
+```
 
----
+ayda-robotics/
+├── dashboard/ayda-dashbord   # Frontend Angular
+├── backend/ayda-backend      # Backend NestJS
+├── README.md                 # Ce fichier
+├── .gitignore
+├── package.json
+└── ...
 
-## 🚀 Fonctionnalités
-
-- API REST modulaires
-- Validation des entrées (DTOs)
-- Gestion des erreurs centralisée
-- Documentation Swagger (OpenAPI)
-- Tests unitaires & E2E
-- Prêt pour un déploiement production
-
----
-
-## 📦 Installation
-
-Assure-toi d’avoir **Node.js (>=16)** installé.
-
-```bash
-# Clone le projet
-$ git clone https://github.com/ton-utilisateur/backend-ayda.git
-$ cd backend-ayda
-
-# Installe les dépendances
-$ npm install
 ````
 
 ---
 
-## ▶️ Démarrage
+## Prérequis
+
+- Node.js >= 18  
+- Angular CLI (`npm install -g @angular/cli`)  
+- NestJS CLI (`npm install -g @nestjs/cli`)  
+- Git  
+
+---
+
+## Installation Frontend (Angular)
 
 ```bash
-# En développement (avec rechargement automatique)
-$ npm run start:dev
+cd dashboard/ayda-dashbord
+npm install
+ng serve
+````
 
-# En production
-$ npm run start:prod
-```
-
-L’API sera disponible par défaut sur : [http://localhost:3000](http://localhost:3000)
+Le frontend sera accessible sur [http://localhost:4200](http://localhost:4200).
 
 ---
 
-## 📄 Documentation de l’API (Swagger)
-
-Une fois le serveur démarré :
-
-👉 [http://localhost:3000/docs](http://localhost:3000/docs)
-
-Cette page donne une documentation interactive de toutes les routes de l’API.
-
----
-
-## 🧪 Tests
+## Installation Backend (NestJS)
 
 ```bash
-# Tests unitaires
-$ npm run test
+cd backend/ayda-backend
+npm install
+npm run start
+```
 
-# Tests E2E
-$ npm run test:e2e
+Le backend sera accessible sur [http://localhost:3000](http://localhost:3000) et le WebSocket sur `ws://localhost:3000`.
 
-# Rapport de couverture
-$ npm run test:cov
+---
+
+## WebSocket - Temps réel
+
+Le backend utilise **Socket.IO** pour envoyer des événements en temps réel au frontend.
+
+* **Événement écouté par Angular** : `face-detected`
+* **Exemple d’émission côté backend** :
+
+```ts
+// src/events/events.gateway.ts
+this.server.emit('face-detected', { personId, confidence, timestamp });
+```
+
+* **Exemple côté Angular** :
+
+```ts
+this.socketService.onFaceDetected().subscribe(event => {
+  console.log('Event reçu:', event);
+  this.alerts.push(event);
+});
 ```
 
 ---
 
-## ⚙️ Configuration
+## Conventions de code
 
-Crée un fichier `.env` à la racine du projet avec tes variables d’environnement :
+* Prettier est configuré avec :
 
-```env
-PORT=3000
-DATABASE_URL=postgresql://user:password@localhost:5432/ayda
-JWT_SECRET=taCleSecrete
+```json
+{
+  "singleQuote": true,
+  "trailingComma": "all"
+}
 ```
 
-*(Adapte ces valeurs selon ton environnement)*
+* Les commits doivent suivre les conventions Git :
+
+  * `feat:` pour une nouvelle fonctionnalité
+  * `fix:` pour un bug
+  * `docs:` pour la documentation
 
 ---
 
-## 📁 Structure recommandée (extrait)
+## Notes
 
-```
-src/
-├─ modules/
-│   ├─ auth/
-│   ├─ users/
-│   └─ features/
-├─ common/
-│   ├─ filters/
-│   ├─ interceptors/
-│   └─ dto/
-├─ config/
-├─ main.ts
-└─ app.module.ts
-```
+* Ce repository contient plusieurs projets. Assurez-vous d’être dans le bon dossier (`dashboard/ayda-dashbord` ou `backend/ayda-backend`) avant d’exécuter les commandes `npm install` ou `npm run start`.
+* Pour toute contribution, créez une **branche dédiée** et faites un **pull request** vers `main`.
 
 ---
 
-## 📦 Déploiement
+## Licence
 
-Pour un build production :
-
-```bash
-# Build
-$ npm run build
-
-# Start production
-$ npm run start:prod
-```
-
-Tu peux déployer sur des plateformes comme **Render**, **Heroku**, **Fly.io**, **AWS**, ou servir en serverless.
-
----
-
-## 🧠 Bonnes pratiques suggérées
-
-* Active **ESLint** et **Prettier**
-* Configure **CI/CD** (ex. GitHub Actions)
-* Active un système de logs et monitoring (Sentry, Datadog, etc.)
-* Versionne ton API (ex: `/api/v1/...`)
-
----
-
-## 🤝 Contribuer
-
-Les contributions sont les bienvenues !
-Merci de forker, créer une branche `feature/...`, puis ouvrir une *Pull Request*.
-
----
-
-## 📜 Licence
-
-Ce projet est sous licence **MIT**.
-Powered by NestJS 💙
+MIT License © [Abdoulaye kane / Gaynaako IT]
