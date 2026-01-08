@@ -153,4 +153,3 @@ Merci de forker, créer une branche `feature/...`, puis ouvrir une *Pull Request
 
 Ce projet est sous licence **MIT**.
 Powered by NestJS 💙
-
