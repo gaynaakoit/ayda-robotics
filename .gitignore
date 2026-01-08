@@ -1,0 +1,20 @@
+# Node / Angular / Nest
+node_modules/
+dist/
+.tmp/
+
+# Angular
+.angular/
+.env
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
