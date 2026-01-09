@@ -1,0 +1,11 @@
+<h2>⚙️ User Settings</h2>
+
+<input [(ngModel)]="user.name" placeholder="Name" />
+<input [(ngModel)]="user.email" placeholder="Email" />
+
+<label>
+  <input type="checkbox" [(ngModel)]="user.notifications" />
+  Notifications
+</label>
+
+<button (click)="save()">Save</button>

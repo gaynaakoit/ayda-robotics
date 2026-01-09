@@ -3,8 +3,8 @@ import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-alerts-feed',
-  templateUrl: './alerts-feed.html',
-  styleUrls: ['./alerts-feed.scss']
+  templateUrl: './alerts-feed.component.html',
+  styleUrls: ['./alerts-feed.component.scss']
 })
 export class AlertsFeedComponent implements OnInit {
   alerts: any[] = [];

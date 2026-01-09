@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LiveView } from './live-view';
+import { AlertsFeedComponent } from './alerts-feed.component';
 
-describe('LiveView', () => {
-  let component: LiveView;
-  let fixture: ComponentFixture<LiveView>;
+describe('AlertsFeed', () => {
+  let component: AlertsFeedComponent;
+  let fixture: ComponentFixture<AlertsFeedComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LiveView]
+      imports: [AlertsFeedComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LiveView);
+    fixture = TestBed.createComponent(AlertsFeedComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

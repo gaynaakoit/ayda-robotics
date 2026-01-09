@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+.navbar {
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+    background: #111;
+  }
+  
+  .navbar a {
+    color: #00e5ff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 15px;
+  }
+  
+  .navbar a.active {
+    text-decoration: underline;
+  }
+  

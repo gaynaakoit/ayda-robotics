@@ -1,0 +1,14 @@
+<h2>📜 History</h2>
+
+<table>
+  <tr>
+    <th>Date</th>
+    <th>Event</th>
+    <th>Source</th>
+  </tr>
+  <tr *ngFor="let log of logs">
+    <td>{{ log.date }}</td>
+    <td>{{ log.type }}</td>
+    <td>{{ log.source }}</td>
+  </tr>
+</table>

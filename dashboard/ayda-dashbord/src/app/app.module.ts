@@ -2,10 +2,20 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { AlertsFeedComponent } from './components/alerts-feed/alerts-feed';
-import { HomeComponent } from './components/home/home.component';
+import { AlertsFeedComponent } from './components/alerts-feed/alerts-feed.component';
+import { LiveViewComponent } from './components/live-view/live-view.component';
+import { DashboardComponent } from './components/dashbord/dashboard.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
+import { UserService } from './services/user.service';
+import { LiveService } from './services/live.service';
+import { HistoryService } from './services/history.service';
+import { AnalyticsService } from './services/analytics.service';
+import { NotificationService } from './services/notification.service';
 
 const config: SocketIoConfig = {
   url: 'http://localhost:3000',
@@ -17,15 +27,20 @@ const config: SocketIoConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    AlertsFeedComponent
+    LiveViewComponent,
+    AlertsFeedComponent,
+    DashboardComponent,
+    NotificationsComponent,
+    UserSettingsComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    FormsModule,
     AppRoutingModule,
     SocketIoModule.forRoot(config)
   ],
-  providers: [],
+  providers: [UserService, LiveService, HistoryService, AnalyticsService, NotificationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

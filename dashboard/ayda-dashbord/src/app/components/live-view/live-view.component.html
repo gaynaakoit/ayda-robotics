@@ -1,0 +1,11 @@
+<h2>🎥 Live View</h2>
+
+<div class="video-container">
+  <video autoplay muted></video>
+</div>
+
+<ul>
+  <li *ngFor="let e of events">
+    {{ e.type }} | {{ e.timestamp }}
+  </li>
+</ul>

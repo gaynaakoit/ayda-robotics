@@ -7,9 +7,16 @@ import { Socket } from 'ngx-socket-io';
   providedIn: 'root',
 })
 export class SocketService {
-    constructor(private socket: Socket) {}
+  constructor(private socket: Socket) {}
 
-    onFaceDetected(): Observable<any> {
-        return this.socket.fromEvent<any>('face-detected');
-    }
+  listen<T>(event: string): Observable<T> {
+    return this.socket.fromEvent<T>(event);
+  }
+  emit(arg0: string, arg1: { id: string; }) {
+    throw new Error('Method not implemented.');
+  }
+
+  onFaceDetected(): Observable<any> {
+    return this.socket.fromEvent<any>('face-detected');
+  }
 }
