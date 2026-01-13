@@ -6,7 +6,8 @@ import {
     OnGatewayDisconnect
   } from '@nestjs/websockets';
   import { Server, Socket } from 'socket.io';
-  
+  import { v4 as uuid } from 'uuid';
+
   @WebSocketGateway({ cors: { origin: '*' } })
   export class EventsGateway
     implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -28,16 +29,36 @@ import {
   
     emitFaceDetected(face: { personId: string; confidence: number; timestamp: string }) {
       console.log('📡 gateway active', 'events', {
+        id: uuid(),
         type: 'FACE_DETECTED',
+        source: 'AI',
         timestamp: new Date().toISOString(),
-        source: 'camera-01',
-        payload: face,
+        payload: {
+          personId: 'user_42',
+          confidence: 0.96,
+          box: {
+            x: 0.32,
+            y: 0.18,
+            width: 0.22,
+            height: 0.28
+          }
+        }
       });
       this.server.emit('events', {
+        id: uuid(),
         type: 'FACE_DETECTED',
+        source: 'AI',
         timestamp: new Date().toISOString(),
-        source: 'camera-01',
-        payload: face,
+        payload: {
+          personId: 'user_42',
+          confidence: 0.96,
+          box: {
+            x: 0.32,
+            y: 0.18,
+            width: 0.22,
+            height: 0.28
+          }
+        }
       });
     }
   }
