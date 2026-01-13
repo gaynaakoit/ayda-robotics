@@ -1,8 +1,10 @@
 <h3>Real-time Alerts</h3>
 <ul>
   <li *ngFor="let alert of alerts">
+    {{ alert.type }} —
     {{ alert.timestamp }} —
-    {{ alert.personId }} —
-    confidence: {{ alert.confidence }}
+    {{ alert.source }} —
+    person ID: {{ alert.payload.personId }} -
+    confidence: {{ alert.payload.confidence }}
   </li>
 </ul>

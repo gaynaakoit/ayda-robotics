@@ -27,8 +27,18 @@ import {
     }
   
     emitFaceDetected(face: { personId: string; confidence: number; timestamp: string }) {
-      console.log('📡 gateway active', face);
-      this.server.emit('face-detected', face);
+      console.log('📡 gateway active', 'events', {
+        type: 'FACE_DETECTED',
+        timestamp: new Date().toISOString(),
+        source: 'camera-01',
+        payload: face,
+      });
+      this.server.emit('events', {
+        type: 'FACE_DETECTED',
+        timestamp: new Date().toISOString(),
+        source: 'camera-01',
+        payload: face,
+      });
     }
   }
   

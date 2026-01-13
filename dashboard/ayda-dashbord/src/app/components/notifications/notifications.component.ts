@@ -11,8 +11,10 @@ export class NotificationsComponent implements OnInit {
   constructor(private notificationService: NotificationService) {}
 
   ngOnInit(): void {
-    this.notificationService.listen().subscribe((n: any) => {
-      this.notifications.push(n);
+    this.notificationService.stream().subscribe(event => {
+      if (event.type === 'ALERT') {
+        this.notifications.push(event);
+      }
     });
   }
 }

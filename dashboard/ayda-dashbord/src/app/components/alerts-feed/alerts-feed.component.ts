@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SocketEvent } from 'src/app/models/socket-event.model';
 import { SocketService } from '../../services/socket.service';
 
 @Component({
@@ -7,15 +8,16 @@ import { SocketService } from '../../services/socket.service';
   styleUrls: ['./alerts-feed.component.scss']
 })
 export class AlertsFeedComponent implements OnInit {
-  alerts: any[] = [];
+  alerts: SocketEvent[] = [];
 
   constructor(private socketService: SocketService) {}
 
   ngOnInit(): void {
-    
-    this.socketService.onFaceDetected().subscribe((event) => {
-      console.log('Event reçu:', event);
-      this.alerts.push(event);
+    this.socketService.listen<any>('events').subscribe((event) => {
+      if (event.type === 'FACE_DETECTED') {
+        console.log('Face detected:', event);
+        this.alerts.push(event);
+      } 
     });
   }
 }

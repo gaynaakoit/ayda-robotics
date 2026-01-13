@@ -12,7 +12,7 @@ export class LiveViewComponent implements OnInit {
   constructor(private liveService: LiveService) {}
 
   ngOnInit(): void {
-    this.liveService.onEvent().subscribe((event: any) => {
+    this.liveService.onLive().subscribe((event: any) => {
       this.events.unshift(event);
     });
   }
