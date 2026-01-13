@@ -1,20 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { NotificationService } from '../../services/notification.service';
+import { Component } from '@angular/core';
+import { EventStoreService } from 'src/app/services/event-store.service';
+import { SocketEvent, NotificationPayload } from 'src/app/models/socket-event.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-notifications',
   templateUrl: './notifications.component.html',
+  styleUrls: ['./notifications.component.scss']
 })
-export class NotificationsComponent implements OnInit {
-  notifications: any[] = [];
+export class NotificationsComponent {
+  notifications$: Observable<SocketEvent<NotificationPayload>[]>;
 
-  constructor(private notificationService: NotificationService) {}
-
-  ngOnInit(): void {
-    this.notificationService.stream().subscribe(event => {
-      if (event.type === 'ALERT') {
-        this.notifications.push(event);
-      }
-    });
+  constructor(private eventStore: EventStoreService) {
+    this.notifications$ = this.eventStore.ofType<NotificationPayload>('NOTIFICATION');
   }
 }

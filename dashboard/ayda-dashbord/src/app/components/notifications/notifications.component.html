@@ -1,5 +1,5 @@
 <h2>🔔 Notifications</h2>
 
-<div *ngFor="let n of notifications" class="notif">
-  {{ n.message }} — {{ n.time }}
+<div *ngFor="let n of notifications$ | async" class="notif">
+  {{ n.payload.message }} — {{ n.payload.time }}
 </div>

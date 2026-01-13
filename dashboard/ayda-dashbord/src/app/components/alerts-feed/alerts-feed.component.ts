@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SocketEvent } from 'src/app/models/socket-event.model';
-import { SocketService } from '../../services/socket.service';
+import { SocketEvent, FaceDetectedPayload } from 'src/app/models/socket-event.model';
+import { EventStoreService } from 'src/app/services/event-store.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-alerts-feed',
@@ -8,16 +10,11 @@ import { SocketService } from '../../services/socket.service';
   styleUrls: ['./alerts-feed.component.scss']
 })
 export class AlertsFeedComponent implements OnInit {
-  alerts: SocketEvent[] = [];
-
-  constructor(private socketService: SocketService) {}
-
-  ngOnInit(): void {
-    this.socketService.listen<any>('events').subscribe((event) => {
-      if (event.type === 'FACE_DETECTED') {
-        console.log('Face detected:', event);
-        this.alerts.push(event);
-      } 
-    });
+  alerts$: Observable<SocketEvent<FaceDetectedPayload>[]>;
+  
+  constructor(private eventStore: EventStoreService) {
+    this.alerts$ = this.eventStore.ofType<FaceDetectedPayload>('FACE_DETECTED');
   }
+
+  ngOnInit(): void {}
 }

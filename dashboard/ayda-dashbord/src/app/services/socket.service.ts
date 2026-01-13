@@ -8,7 +8,9 @@ import { SocketEvent } from '../models/socket-event.model';
   providedIn: 'root',
 })
 export class SocketService {
-  constructor(private socket: Socket) {}
+  constructor(private socket: Socket) {
+    console.log('✅ SocketService initialized');
+  }
 
   listen<T>(eventName: string): Observable<SocketEvent<T>> {
     console.log(eventName)
