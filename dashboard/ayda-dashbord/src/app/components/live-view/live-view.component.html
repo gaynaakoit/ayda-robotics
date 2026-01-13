@@ -1,11 +1,23 @@
-<h2>🎥 Live View</h2>
+<div class="live-container">
+  <!-- 🎥 Flux caméra -->
+  <div class="video-wrapper">
+    <img src="https://placehold.co/1280x720" class="video" />
 
-<div class="video-container">
-  <video autoplay muted></video>
+    <!-- 🟩 Bounding box -->
+    <ng-container *ngIf="face$ | async as face">
+      <div
+        class="bbox"
+        [style.left.%]="face.payload.box.x * 100"
+        [style.top.%]="face.payload.box.y * 100"
+        [style.width.%]="face.payload.box.width * 100"
+        [style.height.%]="face.payload.box.height * 100"
+      ></div>
+    </ng-container>
+  </div>
+
+  <!-- 👤 Dernière détection -->
+  <div class="face-info" *ngIf="face$ | async as face">
+    <strong>ID:</strong> {{ face.payload.personId }} <br />
+    <strong>Confiance:</strong> {{ face.payload.confidence | percent }}
+  </div>
 </div>
-
-<ul>
-  <li *ngFor="let e of events">
-    {{ e.type }} | {{ e.timestamp }}
-  </li>
-</ul>

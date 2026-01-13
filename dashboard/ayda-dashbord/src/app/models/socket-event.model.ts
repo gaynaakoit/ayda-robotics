@@ -12,10 +12,18 @@ export type EventSource =
   | 'USER'
   | 'SYSTEM';
 
-export interface FaceDetectedPayload {
+  export interface BoundingBox {
+    x: number; // 0..1
+    y: number; // 0..1
+    width: number;
+    height: number;
+  }
+  
+  export interface FaceDetectedPayload {
     personId: string;
     confidence: number;
-}
+    box: BoundingBox;
+  }
 
 export interface NotificationPayload {
     message: string;

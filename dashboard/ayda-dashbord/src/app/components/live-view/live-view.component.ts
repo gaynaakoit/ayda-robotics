@@ -1,19 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { LiveService } from '../../services/live.service';
+import { Component } from '@angular/core';
+import { EventStoreService } from 'src/app/services/event-store.service';
+import { FaceDetectedPayload } from 'src/app/models/socket-event.model';
 
 @Component({
   selector: 'app-live-view',
   templateUrl: './live-view.component.html',
-  styleUrls: ['./live-view.component.scss'],
+  styleUrls: ['./live-view.component.scss']
 })
-export class LiveViewComponent implements OnInit {
-  events: any[] = [];
+export class LiveViewComponent {
+  face$ = this.eventStore.latest<FaceDetectedPayload>('FACE_DETECTED');
 
-  constructor(private liveService: LiveService) {}
-
-  ngOnInit(): void {
-    this.liveService.onLive().subscribe((event: any) => {
-      this.events.unshift(event);
-    });
-  }
+  constructor(private eventStore: EventStoreService) {}
 }
