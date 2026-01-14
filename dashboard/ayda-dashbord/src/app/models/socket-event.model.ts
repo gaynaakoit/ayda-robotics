@@ -20,10 +20,13 @@ export type EventSource =
   }
   
   export interface FaceDetectedPayload {
-    personId: string;
-    confidence: number;
-    box: BoundingBox;
+    faces: Array<{
+      personId: string;
+      confidence: number;
+      box: { x: number; y: number; width: number; height: number };
+    }>;
   }
+  
 
 export interface NotificationPayload {
     message: string;

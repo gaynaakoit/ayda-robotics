@@ -4,7 +4,8 @@
     {{ alert.type }} —
     {{ alert.timestamp }} —
     {{ alert.source }} —
-    👤 {{ alert.payload.personId }}
-    ({{ alert.payload.confidence }})
+    <div *ngFor="let face of alert.payload.faces">
+      👤 {{ face.personId }} ({{ face.confidence | percent }})
+    </div>
   </li>
 </ul>
