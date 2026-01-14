@@ -7,6 +7,7 @@ import {
   } from '@nestjs/websockets';
   import { Server, Socket } from 'socket.io';
   import { v4 as uuid } from 'uuid';
+import { FaceDetectedDto } from './dto/face-event.dto';
 
   @WebSocketGateway({ cors: { origin: '*' } })
   export class EventsGateway
@@ -27,21 +28,14 @@ import {
       console.log('🔴 Client déconnecté:', client.id);
     }
   
-    emitFaceDetected(face: { personId: string; confidence: number; timestamp: string }) {
+    emitFaceDetected(faces: FaceDetectedDto) {
       console.log('📡 gateway active', 'events', {
         id: uuid(),
         type: 'FACE_DETECTED',
         source: 'AI',
         timestamp: new Date().toISOString(),
         payload: {
-          personId: 'user_42',
-          confidence: 0.96,
-          box: {
-            x: 0.32,
-            y: 0.18,
-            width: 0.22,
-            height: 0.28
-          }
+          faces
         }
       });
       this.server.emit('events', {
@@ -50,14 +44,7 @@ import {
         source: 'AI',
         timestamp: new Date().toISOString(),
         payload: {
-          personId: 'user_42',
-          confidence: 0.96,
-          box: {
-            x: 0.32,
-            y: 0.18,
-            width: 0.22,
-            height: 0.28
-          }
+          faces
         }
       });
     }

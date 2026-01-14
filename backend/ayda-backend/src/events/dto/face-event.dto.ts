@@ -1,7 +1,19 @@
-export class FaceEventDto {
-    person_id!: string;      // "unknown" | "user_123"
-    confidence!: number;     // 0.0 → 1.0
-    timestamp!: string;      // ISO format
-    image?: string;         // Base64 optional
+  export class BoundingBoxDto {
+    x!: number;
+    y!: number;
+    width!: number;
+    height!: number;
+  }
+  
+  export class FaceDto {
+    personId!: string;
+    confidence!: number;
+    timestamp!: string; 
+    image?: string;   
+    box!: BoundingBoxDto;
+  }
+  
+  export class FaceDetectedDto {
+    faces!: FaceDto[];
   }
   
