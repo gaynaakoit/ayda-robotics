@@ -16,6 +16,7 @@ import { LiveService } from './services/live.service';
 import { HistoryService } from './services/history.service';
 import { AnalyticsService } from './services/analytics.service';
 import { NotificationService } from './services/notification.service';
+import { HistoryTimelineComponent } from './components/history-timeline/history-timeline.component';
 
 const config: SocketIoConfig = {
   url: 'http://localhost:3000',
@@ -31,7 +32,8 @@ const config: SocketIoConfig = {
     AlertsFeedComponent,
     DashboardComponent,
     NotificationsComponent,
-    UserSettingsComponent
+    UserSettingsComponent,
+    HistoryTimelineComponent
   ],
   imports: [
     BrowserModule,

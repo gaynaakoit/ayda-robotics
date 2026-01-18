@@ -1,0 +1,16 @@
+<div class="timeline">
+    <div
+      class="event"
+      *ngFor="let e of events$ | async"
+      (click)="select(e.id)"
+    >
+      <div class="dot"></div>
+      <div class="time">
+        {{ e.timestamp | date:'HH:mm:ss' }}
+      </div>
+      <div class="count">
+        {{ e.payload.faces.length }} face(s)
+      </div>
+    </div>
+  </div>
+  

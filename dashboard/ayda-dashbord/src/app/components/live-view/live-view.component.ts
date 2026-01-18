@@ -8,7 +8,9 @@ import { FaceDetectedPayload } from 'src/app/models/socket-event.model';
   styleUrls: ['./live-view.component.scss']
 })
 export class LiveViewComponent {
-  face$ = this.eventStore.latest<FaceDetectedPayload>('FACE_DETECTED');
+  faceEvent$ = this.eventStore.stateAtCursor<{
+    faces: FaceDetectedPayload[];
+  }>('FACE_DETECTED');
 
   constructor(private eventStore: EventStoreService) {}
 }
