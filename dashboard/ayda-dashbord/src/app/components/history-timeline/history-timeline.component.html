@@ -2,6 +2,19 @@
 
   <!-- ⏱ Slider temporel -->
   <ng-container *ngIf="events$ | async as events">
+
+    <!-- Replay Button -->
+    <div class="timeline-controls">
+      <button
+        type="button"
+        class="btn-replay"
+        (click)="replay(events)"
+        [disabled]="!events.length"
+      >
+        ▶️ Replay
+      </button>
+    </div>
+    
     <input
       type="range"
       min="0"

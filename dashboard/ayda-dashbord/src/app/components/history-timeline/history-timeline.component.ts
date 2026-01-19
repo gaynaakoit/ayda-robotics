@@ -83,7 +83,7 @@ export class HistoryTimelineComponent {
       );
     }
   }
-  
+
   private download(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -107,6 +107,26 @@ export class HistoryTimelineComponent {
   
     return new Blob([ab], { type: mime });
   }
+
+  replay(events: SocketEvent<FaceDetectedPayload>[]) {
+    if (!events?.length) return;
+  
+    let i = events.length - 1;
+  
+    const interval = setInterval(() => {
+      if (i < 0) {
+        clearInterval(interval);
+        return;
+      }
+  
+      const e = events[i];
+      this.ui.setHistory();
+      this.eventStore.setCursor(e.id);
+      this.selectedIndex = i; // pour mettre à jour la preview
+      i--;
+    }, 500); // 500ms/frame
+  }
+  
     
 }
 
