@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { EventStoreService } from 'src/app/services/event-store.service';
 import { FaceDetectedPayload } from 'src/app/models/socket-event.model';
+import { UiStateService } from 'src/app/services/ui-state.service';
 
 @Component({
   selector: 'app-live-view',
@@ -8,9 +9,16 @@ import { FaceDetectedPayload } from 'src/app/models/socket-event.model';
   styleUrls: ['./live-view.component.scss']
 })
 export class LiveViewComponent {
-  faceEvent$ = this.eventStore.stateAtCursor<{
-    faces: FaceDetectedPayload[];
-  }>('FACE_DETECTED');
-
-  constructor(private eventStore: EventStoreService) {}
+  event$ = this.eventStore
+  .latestOrCursor<FaceDetectedPayload>('FACE_DETECTED');
+  
+  constructor(
+    private eventStore: EventStoreService,
+    public ui: UiStateService
+  ) {
+    this.event$.subscribe(e => {
+      console.log('EVENT', e);
+      console.log('faces isArray?', Array.isArray(e?.payload?.faces));
+    });
+  }
 }

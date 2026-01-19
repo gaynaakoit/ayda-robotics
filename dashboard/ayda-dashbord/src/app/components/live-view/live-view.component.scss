@@ -1,33 +1,42 @@
 .live-container {
-    display: flex;
-    gap: 16px;
-  }
-  
-  .video-wrapper {
-    position: relative;
-    width: 640px;
-    height: 480px;
-  }
-  
-  .video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .bbox {
-    position: absolute;
-    border: 2px solid #00ff88;
-    box-shadow: 0 0 12px rgba(0, 255, 136, 0.6);
-    pointer-events: none;
-  }
-  
-  .face-info {
-    background: #0b1e1a;
-    padding: 12px;
-    border-radius: 8px;
-    color: #00ff88;
-    min-width: 200px;
-  }
-  
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* 🎥 Conteneur vidéo */
+.video-wrapper {
+  position: relative;
+  width: 640px;
+  aspect-ratio: 16 / 9;   /* 🔥 CRUCIAL */
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;       /* 🔥 empêche bbox de sortir */
+}
+
+/* 🎞️ Image ou vidéo */
+.video-wrapper img,
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;    /* 🔥 correspond aux coords IA */
+  display: block;
+}
+
+/* 📦 Bounding box */
+.bbox {
+  position: absolute;
+  border: 2px solid #00ff88;
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.6);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* 🧠 Infos visage (optionnel) */
+.face-info {
+  background: #0b1e1a;
+  padding: 12px;
+  border-radius: 8px;
+  color: #00ff88;
+  min-width: 200px;
+}

@@ -1,0 +1,15 @@
+<app-toolbar></app-toolbar>
+
+<div class="layout row">
+    <div class="col-sm-6">
+    <!-- Toujours visible -->
+    <app-live-view></app-live-view>
+    </div>
+    <div class="col-sm-6">
+    <!-- Overlay uniquement en mode HISTORY -->
+    <app-history-timeline
+        *ngIf="ui.isHistory() | async"
+        class="overlay-timeline">
+    </app-history-timeline>
+    </div>
+</div>

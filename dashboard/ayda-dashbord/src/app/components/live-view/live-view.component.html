@@ -1,9 +1,14 @@
 <div class="live-container" style="margin-top: 50px;">
   <!-- 🎥 Flux caméra -->
-  <div class="video-wrapper">
-    <img src="https://placehold.co/1280x720" class="video" />
+  <div class="header">
+    <span *ngIf="ui.isLive() | async" class="badge live">LIVE</span>
+    <span *ngIf="!(ui.isLive() | async)" class="badge history">HISTORY</span>
+  </div>
   
-    <ng-container *ngIf="faceEvent$ | async as event">
+  <div class="video-wrapper">
+    <img src="https://placehold.co/1280x720" />
+  
+    <ng-container *ngIf="event$ | async as event">
       <div
         *ngFor="let face of event.payload.faces"
         class="bbox"
@@ -14,3 +19,4 @@
       ></div>
     </ng-container>
   </div>
+</div>
