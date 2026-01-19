@@ -43,6 +43,16 @@
       <div class="count">
         {{ e.payload.faces.length }} face(s)
       </div>
+      <!-- Bouton export pro -->
+      <button
+        type="button"
+        class="btn-export"
+        (click)="export(e.id, events); $event.stopPropagation()"
+      >
+        <span class="icon">⬇️</span>
+        <span class="label">Export</span>
+        <span class="tooltip">Exporter snapshot + JSON</span>
+      </button>
     </div>
   </ng-container>
 

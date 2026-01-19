@@ -4,12 +4,6 @@
     padding: 10px;
   }
   
-  .event {
-    cursor: pointer;
-    margin-right: 16px;
-    text-align: center;
-  }
-  
   .dot {
     width: 10px;
     height: 10px;
@@ -56,5 +50,66 @@
     position: absolute;
     border: 2px solid #00ff88;
     box-shadow: 0 0 8px rgba(0,255,136,.6);
+  }
+
+  .event {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-bottom: 1px solid #333;
+    gap: 10px;
+  
+    &.active {
+      background-color: rgba(0, 255, 136, 0.1);
+    }
+  
+    .event-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+  
+    .btn-export {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background-color: #00ff88;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: #0b1e1a;
+      transition: background 0.2s, transform 0.1s;
+  
+      &:hover {
+        background-color: #00cc6a;
+        transform: scale(1.05);
+      }
+  
+      .tooltip {
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0b1e1a;
+        color: #00ff88;
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        border-radius: 4px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+        white-space: nowrap;
+        z-index: 10;
+      }
+  
+      &:hover .tooltip {
+        opacity: 1;
+      }
+    }
   }
   

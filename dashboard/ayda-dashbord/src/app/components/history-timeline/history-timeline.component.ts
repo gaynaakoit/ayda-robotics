@@ -58,6 +58,56 @@ export class HistoryTimelineComponent {
     this.eventStore.clearCursor();
     this.ui.setLive();
   }
+
+  export(eventId: string, events: SocketEvent[]) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+  
+    // 1️⃣ Export JSON
+    const jsonBlob = new Blob(
+      [JSON.stringify(event, null, 2)],
+      { type: 'application/json' }
+    );
+  
+    this.download(
+      jsonBlob,
+      `event_${event.id}.json`
+    );
+  
+    // 2️⃣ Export snapshot si présent
+    if (event.snapshot) {
+      const imageBlob = this.base64ToBlob(event.snapshot);
+      this.download(
+        imageBlob,
+        `snapshot_${event.id}.png`
+      );
+    }
+  }
+  
+  private download(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  
+  private base64ToBlob(base64: string): Blob {
+    const parts = base64.split(',');
+    const byteString = atob(parts[1]);
+    const mime = parts[0].match(/:(.*?);/)![1];
+  
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+  
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+  
+    return new Blob([ab], { type: mime });
+  }
+    
 }
 
 

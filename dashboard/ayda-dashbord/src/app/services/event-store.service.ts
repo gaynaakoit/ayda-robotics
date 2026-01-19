@@ -91,6 +91,21 @@ export class EventStoreService {
     event.snapshot = this.snapshot.captureFromImage(img);
     this.events$.next([...events]); // 🔴 force refresh
   }
+
+  exportEvent(eventId: string) {
+    const event = this.events$.value.find(e => e.id === eventId);
+    if (!event) return;
+  
+    const blob = new Blob(
+      [JSON.stringify(event, null, 2)],
+      { type: 'application/json' }
+    );
+  
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `event-${event.id}.json`;
+    a.click();
+  }  
   
 
 }
