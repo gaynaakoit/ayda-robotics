@@ -3,6 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { SocketEvent } from '../models/socket-event.model';
 import { SocketService } from '../services/socket.service';
+import { EventCacheService } from './event-cache.service';
 import { SnapshotService } from './snapshot.service';
 import { UiStateService } from './ui-state.service';
 
@@ -12,9 +13,15 @@ export class EventStoreService {
   private events$ = new BehaviorSubject<SocketEvent[]>([]);
   private cursor$ = new BehaviorSubject<string | null>(null);
 
-  constructor(private socket: SocketService, private ui: UiStateService, private snapshot: SnapshotService) {
+  constructor(private socket: SocketService, private ui: UiStateService, private snapshot: SnapshotService, private cache: EventCacheService) {
+    this.cache.init().then(async () => {
+      const cached = await this.cache.loadAll();
+      this.events$.next(cached);
+    });
+  
     this.socket.listen<SocketEvent>('events').subscribe(event => {
       this.events$.next([event, ...this.events$.value]);
+      this.cache.save(event);
     });
   }
 
