@@ -1,8 +1,27 @@
 <div class="timeline">
+
+  <!-- ⏱ Slider temporel -->
+  <ng-container *ngIf="events$ | async as events">
+    <input
+      type="range"
+      min="0"
+      [max]="events.length - 1"
+      [value]="selectedIndex"
+      (input)="scrub($any($event.target).value, events)"
+      class="timeline-slider"
+    />
+
+    <!-- 🕒 Preview -->
+    <div class="preview-time">
+      {{ events[selectedIndex]?.timestamp | date:'HH:mm:ss' }}
+    </div>
+
+    <!-- 📍 Timeline -->
     <div
       class="event"
-      *ngFor="let e of events$ | async"
-      (click)="select(e.id)"
+      *ngFor="let e of events; let i = index"
+      (click)="select(e.id, i)"
+      [class.active]="i === selectedIndex"
     >
       <div class="dot"></div>
       <div class="time">
@@ -12,5 +31,10 @@
         {{ e.payload.faces.length }} face(s)
       </div>
     </div>
-  </div>
-  
+  </ng-container>
+
+  <!-- 🔴 LIVE -->
+  <button class="back-live" (click)="backToLive()">
+    🔴 Retour LIVE
+  </button>
+</div>

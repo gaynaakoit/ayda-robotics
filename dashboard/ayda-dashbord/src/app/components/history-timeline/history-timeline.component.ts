@@ -9,17 +9,41 @@ import { UiStateService } from 'src/app/services/ui-state.service';
   templateUrl: './history-timeline.component.html',
   styleUrls: ['./history-timeline.component.scss']
 })
+
 export class HistoryTimelineComponent {
   events$: Observable<SocketEvent<FaceDetectedPayload>[]>;
 
-  constructor(private eventStore: EventStoreService, private ui: UiStateService) {
+  selectedIndex = 0;
+
+  constructor(
+    private eventStore: EventStoreService,
+    private ui: UiStateService
+  ) {
     this.events$ = this.eventStore.ofType<FaceDetectedPayload>('FACE_DETECTED');
-    console.log(this.events$)
   }
 
-  select(eventId: string) {
+  /** Click timeline */
+  select(eventId: string, index: number) {
+    this.selectedIndex = index;
     this.ui.setHistory();
     this.eventStore.setCursor(eventId);
   }
+
+  /** Slider scrub */
+  scrub(index: number, events: SocketEvent<FaceDetectedPayload>[]) {
+    const event = events[index];
+    if (!event) return;
+
+    this.selectedIndex = index;
+    this.ui.setHistory();
+    this.eventStore.setCursor(event.id);
+  }
+
+  backToLive() {
+    this.selectedIndex = 0;
+    this.eventStore.clearCursor();
+    this.ui.setLive();
+  }
 }
+
 
