@@ -11,6 +11,19 @@
       class="timeline-slider"
     />
 
+    <div class="snapshot-preview" *ngIf="events[selectedIndex]?.snapshot">
+      <img [src]="events[selectedIndex].snapshot" />
+    
+      <div
+        *ngFor="let face of events[selectedIndex].payload.faces"
+        class="bbox"
+        [style.left.%]="face.box.x * 100"
+        [style.top.%]="face.box.y * 100"
+        [style.width.%]="face.box.width * 100"
+        [style.height.%]="face.box.height * 100"
+      ></div>
+    </div>    
+
     <!-- 🕒 Preview -->
     <div class="preview-time">
       {{ events[selectedIndex]?.timestamp | date:'HH:mm:ss' }}

@@ -40,4 +40,5 @@ export interface SocketEvent<T = any> {
   timestamp: string; // ISO
   payload: T; 
   acknowledged?: boolean;
+  snapshot?: string;
 }

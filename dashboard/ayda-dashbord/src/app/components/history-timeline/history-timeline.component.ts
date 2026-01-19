@@ -20,6 +20,9 @@ export class HistoryTimelineComponent {
     private ui: UiStateService
   ) {
     this.events$ = this.eventStore.ofType<FaceDetectedPayload>('FACE_DETECTED');
+    this.events$.subscribe(events => {
+      console.log('snapshot exists?', events[0]?.snapshot);
+    });
   }
 
   /** Click timeline */
@@ -27,17 +30,28 @@ export class HistoryTimelineComponent {
     this.selectedIndex = index;
     this.ui.setHistory();
     this.eventStore.setCursor(eventId);
+  
+    this.capture(eventId);
   }
 
   /** Slider scrub */
   scrub(index: number, events: SocketEvent<FaceDetectedPayload>[]) {
     const event = events[index];
     if (!event) return;
-
+  
     this.selectedIndex = index;
     this.ui.setHistory();
     this.eventStore.setCursor(event.id);
+  
+    this.capture(event.id);
   }
+
+  capture(eventId: string) {
+    const img = document.querySelector('img') as HTMLImageElement;
+    if (!img) return;
+  
+    this.eventStore.captureSnapshot(eventId, img);
+  }  
 
   backToLive() {
     this.selectedIndex = 0;

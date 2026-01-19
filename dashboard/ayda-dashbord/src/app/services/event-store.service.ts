@@ -3,6 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { SocketEvent } from '../models/socket-event.model';
 import { SocketService } from '../services/socket.service';
+import { SnapshotService } from './snapshot.service';
 import { UiStateService } from './ui-state.service';
 
 
@@ -11,7 +12,7 @@ export class EventStoreService {
   private events$ = new BehaviorSubject<SocketEvent[]>([]);
   private cursor$ = new BehaviorSubject<string | null>(null);
 
-  constructor(private socket: SocketService, private ui: UiStateService) {
+  constructor(private socket: SocketService, private ui: UiStateService, private snapshot: SnapshotService) {
     this.socket.listen<SocketEvent>('events').subscribe(event => {
       this.events$.next([event, ...this.events$.value]);
     });
@@ -73,5 +74,16 @@ export class EventStoreService {
   clearCursor() {
     this.cursor$.next(null);
   }
+
+  captureSnapshot(eventId: string, img: HTMLImageElement) {
+    const events = this.events$.value;
+    const event = events.find(e => e.id === eventId);
+  
+    if (!event || event.snapshot) return;
+  
+    event.snapshot = this.snapshot.captureFromImage(img);
+    this.events$.next([...events]); // 🔴 force refresh
+  }
+  
 
 }

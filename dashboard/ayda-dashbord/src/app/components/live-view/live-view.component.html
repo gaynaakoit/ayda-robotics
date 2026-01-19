@@ -6,8 +6,17 @@
   </div>
   
   <div class="video-wrapper">
-    <img src="https://placehold.co/1280x720" />
-  
+    <ng-container *ngIf="event$ | async as event">
+      <img #liveImage
+        *ngIf="!event.snapshot"
+        src="assets/camera.jpeg"
+      />
+    
+      <img
+        *ngIf="event.snapshot"
+        [src]="event.snapshot"
+      />
+    </ng-container>
     <ng-container *ngIf="event$ | async as event">
       <div
         *ngFor="let face of event.payload.faces"

@@ -38,3 +38,23 @@
     width: 100%;
   }
   
+
+  .snapshot-preview {
+    position: relative;
+    width: 320px;
+    margin-top: 8px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .snapshot-preview img {
+    width: 100%;
+    display: block;
+  }
+  
+  .snapshot-preview .bbox {
+    position: absolute;
+    border: 2px solid #00ff88;
+    box-shadow: 0 0 8px rgba(0,255,136,.6);
+  }
+  
