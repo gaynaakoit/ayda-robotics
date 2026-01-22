@@ -2,7 +2,12 @@
 
   <!-- ⏱ Slider temporel -->
   <ng-container *ngIf="events$ | async as events">
-
+    <!-- Player Button -->
+    <div class="player-controls">
+      <button (click)="play(events)">▶️ Play</button>
+      <button (click)="stop()">⏹ Stop</button>
+    </div>
+          
     <!-- Replay Button -->
     <div class="timeline-controls">
       <button
@@ -24,19 +29,22 @@
       class="timeline-slider"
     />
 
-    <div class="snapshot-preview" *ngIf="events[selectedIndex]?.snapshot">
-      <img [src]="events[selectedIndex].snapshot" />
+    <div
+      class="snapshot-preview"
+      *ngIf="previewIndex !== null" 
+    >
+      <img [src]="events[previewIndex].snapshot" />
     
       <div
-        *ngFor="let face of events[selectedIndex].payload.faces"
+        *ngFor="let face of events[previewIndex].payload.faces"
         class="bbox"
         [style.left.%]="face.box.x * 100"
         [style.top.%]="face.box.y * 100"
         [style.width.%]="face.box.width * 100"
         [style.height.%]="face.box.height * 100"
       ></div>
-    </div>    
-
+    </div>
+   
     <!-- 🕒 Preview -->
     <div class="preview-time">
       {{ events[selectedIndex]?.timestamp | date:'HH:mm:ss' }}
@@ -46,6 +54,8 @@
     <div
       class="event"
       *ngFor="let e of events; let i = index"
+      (mouseenter)="mouseEnter(e, i)"
+      (mouseleave)="mouseLeave(e.id, i)"
       (click)="select(e.id, i)"
       [class.active]="i === selectedIndex"
     >
@@ -68,9 +78,11 @@
       </button>
     </div>
   </ng-container>
+</div>
 
-  <!-- 🔴 LIVE -->
-  <button class="back-live" (click)="backToLive()">
-    🔴 Retour LIVE
-  </button>
+<div class="row">
+    <!-- 🔴 LIVE -->
+    <button class="back-live" (click)="backToLive()">
+      🔴 Retour LIVE
+    </button>
 </div>

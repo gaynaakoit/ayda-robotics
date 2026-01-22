@@ -16,7 +16,15 @@ export class EventStoreService {
   constructor(private socket: SocketService, private ui: UiStateService, private snapshot: SnapshotService, private cache: EventCacheService) {
     this.cache.init().then(async () => {
       const cached = await this.cache.loadAll();
+      // mettre l'image placeholder sur le dernier event si nécessaire
+      if (cached.length) {
+        const lastIndex = cached.length - 1;
+        if (!cached[lastIndex].snapshot) {
+          cached[lastIndex].snapshot = 'assets/camera.jpeg';
+        }
+      }
       this.events$.next(cached);
+      console.log(this.events$)
     });
   
     this.socket.listen<SocketEvent>('events').subscribe(event => {
@@ -73,7 +81,7 @@ export class EventStoreService {
           return events[0];
         }
   
-        return events.find(e => e.id === cursor) ?? null;
+        return events.find(e => e.id === cursor) ?? events[events.length - 1];
       })
     );
   }

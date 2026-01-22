@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SocketEvent, FaceDetectedPayload } from 'src/app/models/socket-event.model';
 import { EventStoreService } from 'src/app/services/event-store.service';
+import { MiniPlayerService } from 'src/app/services/mini-player.service';
 import { UiStateService } from 'src/app/services/ui-state.service';
 
 @Component({
@@ -14,24 +15,49 @@ export class HistoryTimelineComponent {
   events$: Observable<SocketEvent<FaceDetectedPayload>[]>;
 
   selectedIndex = 0;
+  previewIndex: number | null = null; // 👁 preview temporaire
 
   constructor(
     private eventStore: EventStoreService,
-    private ui: UiStateService
+    private ui: UiStateService,
+    private player: MiniPlayerService
   ) {
     this.events$ = this.eventStore.ofType<FaceDetectedPayload>('FACE_DETECTED');
     this.events$.subscribe(events => {
       console.log('snapshot exists?', events[0]?.snapshot);
+      this.selectedIndex = events.length - 1;
     });
   }
 
   /** Click timeline */
   select(eventId: string, index: number) {
     this.selectedIndex = index;
+    this.previewIndex = null;
     this.ui.setHistory();
     this.eventStore.setCursor(eventId);
   
     this.capture(eventId);
+  }
+
+  preview(event: SocketEvent<FaceDetectedPayload>) {
+    if (event.snapshot) return; // déjà prêt 👌
+  
+    // ⚠️ capture VISUELLE uniquement depuis le flux courant
+    const img = document.querySelector('img') as HTMLImageElement;
+    if (!img) return;
+  
+    this.eventStore.captureSnapshot(event.id, img);
+  }  
+
+  /** Click timeline */
+  mouseEnter(event: SocketEvent<FaceDetectedPayload>, index: number) {
+    this.previewIndex = index;
+    this.preview(event); // 👁 prépare la snapshot si absente
+  }  
+
+  /** Click timeline */
+  mouseLeave(eventId: string, index: number) {
+    this.previewIndex = null;
   }
 
   /** Slider scrub */
@@ -56,7 +82,7 @@ export class HistoryTimelineComponent {
   backToLive() {
     this.selectedIndex = 0;
     this.eventStore.clearCursor();
-    this.ui.setLive();
+    this.ui.setLive();  
   }
 
   export(eventId: string, events: SocketEvent[]) {
@@ -127,7 +153,19 @@ export class HistoryTimelineComponent {
     }, 500); // 500ms/frame
   }
   
+
+  play(events: SocketEvent[]) {
+    this.player.play(events, 2); // 2 fps
+  }
+
+  stop() {
+    this.player.stop();
+  }
+
+  get activeIndex() {
+    console.log(this.previewIndex)
+    return this.previewIndex ?? this.selectedIndex
+  } 
     
 }
-
 
