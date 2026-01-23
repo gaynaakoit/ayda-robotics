@@ -101,6 +101,7 @@ export class EventStoreService {
     event.audit = {
       version: 1,
       verified: true,
+      verifiedBy: 'SHA256',
       source: 'HISTORY',
       createdAt: Date.now(),
       app: 'AYDA ROBOTICS'

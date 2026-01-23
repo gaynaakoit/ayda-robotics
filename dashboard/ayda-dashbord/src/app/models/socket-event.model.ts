@@ -38,6 +38,7 @@ export interface AuditData {
   createdAt: number;
   source: 'LIVE' | 'HISTORY' | 'IMPORT';
   verified: boolean;
+  verifiedBy: 'SHA256';
   hash?: string;
   app: string;
 }
