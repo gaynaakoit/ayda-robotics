@@ -4,6 +4,22 @@
   <ng-container *ngIf="events$ | async as events">
     <!-- Player Button -->
     <div class="player-controls">
+      <div class="speed-controls">
+        <button
+          [class.active]="speed === 1"
+          (click)="setSpeed(1)"
+        >x1</button>
+      
+        <button
+          [class.active]="speed === 2"
+          (click)="setSpeed(2)"
+        >x2</button>
+      
+        <button
+          [class.active]="speed === 4"
+          (click)="setSpeed(4)"
+        >x4</button>
+      </div>      
       <button (click)="play(events)">▶️ Play</button>
       <button (click)="stop()">⏹ Stop</button>
     </div>

@@ -21,6 +21,8 @@ export class HistoryTimelineComponent {
   interpolatedFaces: any[] | null = null;
   eventsSnapshot: SocketEvent<FaceDetectedPayload>[] = [];
 
+  speed = 1; 
+
   constructor(
     private eventStore: EventStoreService,
     private ui: UiStateService,
@@ -187,7 +189,8 @@ export class HistoryTimelineComponent {
     if (!events?.length) return;
   
     let i = events.length - 1;
-  
+    const baseInterval = 500; // x1
+
     const interval = setInterval(() => {
       if (i < 0) {
         clearInterval(interval);
@@ -199,7 +202,7 @@ export class HistoryTimelineComponent {
       this.eventStore.setCursor(e.id);
       this.selectedIndex = i; // pour mettre à jour la preview
       i--;
-    }, 500); // 500ms/frame
+    }, baseInterval / this.speed); // 500ms/frame
   }
 
   play(events: SocketEvent<FaceDetectedPayload>[]) {
@@ -208,10 +211,14 @@ export class HistoryTimelineComponent {
     // 🔥 activer le mode fluide
     this.player.mode = 'INTERPOLATED';
   
-    this.player.play(events, 2, (event, index) => {
-      this.selectedIndex = index;
-      this.preview(event);
-    });
+    this.player.play(
+      events,
+      2 * this.speed, // 🎯 vitesse appliquée ici
+      (event, index) => {
+        this.selectedIndex = index;
+        this.preview(event);
+      }
+    );  
   
     this.player.frame$.subscribe(faces => {
       this.interpolatedFaces = faces;
@@ -240,6 +247,10 @@ export class HistoryTimelineComponent {
     // 🕒 mode normal / preview
     const index = this.activeIndex;
     return this.eventsSnapshot?.[index]?.payload?.faces ?? [];
+  }  
+
+  setSpeed(value: number) {
+    this.speed = value;
   }  
     
 }
