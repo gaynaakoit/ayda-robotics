@@ -76,6 +76,15 @@
         <span class="label">Export</span>
         <span class="tooltip">Exporter snapshot + JSON</span>
       </button>
+      <button
+        type="button"
+        class="btn-export"
+        (click)="exportAudit(e.id, events); $event.stopPropagation()"
+      >
+        <span class="icon">🧾</span>
+        <span class="label">Audit</span>
+        <span class="tooltip">Exporter Audit + JSON</span>
+      </button>
     </div>
   </ng-container>
 </div>

@@ -25,5 +25,10 @@ export class UiStateService {
   isHistory() {
     return this.mode$.pipe(map(m => m === 'HISTORY'));
   }
+
+  getCurrentMode(): 'LIVE' | 'HISTORY' {
+    return this.mode$.value; // BehaviorSubject permet d'accéder à value
+  }
+  
 }
 

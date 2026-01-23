@@ -33,6 +33,15 @@ export interface NotificationPayload {
     time: Date;
 }
 
+export interface AuditData {
+  version: number;
+  createdAt: number;
+  source: 'LIVE' | 'HISTORY' | 'IMPORT';
+  verified: boolean;
+  hash?: string;
+  app: string;
+}
+
 export interface SocketEvent<T = any> { 
   id: string;
   type: EventType;
@@ -41,4 +50,5 @@ export interface SocketEvent<T = any> {
   payload: T; 
   acknowledged?: boolean;
   snapshot?: string;
+  audit?: AuditData;
 }

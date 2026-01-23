@@ -13,6 +13,7 @@ import { UiStateService } from 'src/app/services/ui-state.service';
 
 export class HistoryTimelineComponent {
   events$: Observable<SocketEvent<FaceDetectedPayload>[]>;
+  isPlaying = false;
 
   selectedIndex = 0;
   previewIndex: number | null = null; // 👁 preview temporaire
@@ -51,6 +52,7 @@ export class HistoryTimelineComponent {
 
   /** Click timeline */
   mouseEnter(event: SocketEvent<FaceDetectedPayload>, index: number) {
+    if (this.isPlaying) return;
     this.previewIndex = index;
     this.preview(event); // 👁 prépare la snapshot si absente
   }  
@@ -62,6 +64,7 @@ export class HistoryTimelineComponent {
 
   /** Slider scrub */
   scrub(index: number, events: SocketEvent<FaceDetectedPayload>[]) {
+    if (this.isPlaying) return;
     const event = events[index];
     if (!event) return;
   
@@ -110,6 +113,48 @@ export class HistoryTimelineComponent {
     }
   }
 
+  exportAudit(eventId: string, events: SocketEvent[]) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+  
+    // 🧾 Audit Trail final
+    const auditExport = {
+      meta: {
+        exportedAt: new Date().toISOString(),
+        exporter: 'AYDA Dashboard',
+        format: 'audit-v1'
+      },
+      event: {
+        id: event.id,
+        type: event.type,
+        timestamp: event.timestamp,
+        payload: event.payload ?? null
+      },
+      snapshot: event.snapshot ? 'included' : 'none',
+      audit: event.audit ?? null
+    };
+  
+    // 📄 Export JSON
+    const jsonBlob = new Blob(
+      [JSON.stringify(auditExport, null, 2)],
+      { type: 'application/json' }
+    );
+  
+    this.download(
+      jsonBlob,
+      `audit_${event.id}.json`
+    );
+  
+    // 🖼 Export snapshot si présent
+    if (event.snapshot) {
+      const imageBlob = this.base64ToBlob(event.snapshot);
+      this.download(
+        imageBlob,
+        `audit_${event.id}.png`
+      );
+    }
+  }  
+
   private download(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -154,17 +199,25 @@ export class HistoryTimelineComponent {
   }
   
 
-  play(events: SocketEvent[]) {
-    this.player.play(events, 2); // 2 fps
+  play(events: SocketEvent<FaceDetectedPayload>[]) {
+    this.isPlaying = true;
+    this.player.play(events, 2, (event, index) => {
+      this.selectedIndex = index;
+      this.preview(event);
+    });
   }
+  
 
   stop() {
+    this.isPlaying = false;
     this.player.stop();
   }
 
   get activeIndex() {
     console.log(this.previewIndex)
-    return this.previewIndex ?? this.selectedIndex
+    return this.isPlaying
+    ? this.selectedIndex
+    : (this.previewIndex ?? this.selectedIndex);
   } 
     
 }

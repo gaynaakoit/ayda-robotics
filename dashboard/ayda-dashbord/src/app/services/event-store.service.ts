@@ -6,6 +6,7 @@ import { SocketService } from '../services/socket.service';
 import { EventCacheService } from './event-cache.service';
 import { SnapshotService } from './snapshot.service';
 import { UiStateService } from './ui-state.service';
+import sha256 from 'crypto-js/sha256';
 
 
 @Injectable({ providedIn: 'root' })
@@ -78,7 +79,7 @@ export class EventStoreService {
         if (!events.length) return null;
 
         if (mode === 'LIVE') {
-          return events[0];
+          return events[events.length - 1];
         }
   
         return events.find(e => e.id === cursor) ?? events[events.length - 1];
@@ -97,6 +98,19 @@ export class EventStoreService {
     if (!event || event.snapshot) return;
   
     event.snapshot = this.snapshot.captureFromImage(img);
+    event.audit = {
+      version: 1,
+      verified: true,
+      source: 'HISTORY',
+      createdAt: Date.now(),
+      app: 'AYDA ROBOTICS'
+    };
+    event.audit.hash = sha256(JSON.stringify({
+      id: event.id,
+      timestamp: event.timestamp,
+      snapshot: event.snapshot,
+      faces: event.payload?.faces ?? []
+    })).toString();
     this.events$.next([...events]); // 🔴 force refresh
   }
 
