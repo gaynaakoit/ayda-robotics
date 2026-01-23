@@ -18,6 +18,9 @@ export class HistoryTimelineComponent {
   selectedIndex = 0;
   previewIndex: number | null = null; // 👁 preview temporaire
 
+  interpolatedFaces: any[] | null = null;
+  eventsSnapshot: SocketEvent<FaceDetectedPayload>[] = [];
+
   constructor(
     private eventStore: EventStoreService,
     private ui: UiStateService,
@@ -26,6 +29,7 @@ export class HistoryTimelineComponent {
     this.events$ = this.eventStore.ofType<FaceDetectedPayload>('FACE_DETECTED');
     this.events$.subscribe(events => {
       console.log('snapshot exists?', events[0]?.snapshot);
+      this.eventsSnapshot = events;
       this.selectedIndex = events.length - 1;
     });
   }
@@ -197,28 +201,46 @@ export class HistoryTimelineComponent {
       i--;
     }, 500); // 500ms/frame
   }
-  
 
   play(events: SocketEvent<FaceDetectedPayload>[]) {
     this.isPlaying = true;
+  
+    // 🔥 activer le mode fluide
+    this.player.mode = 'INTERPOLATED';
+  
     this.player.play(events, 2, (event, index) => {
       this.selectedIndex = index;
       this.preview(event);
     });
-  }
   
+    this.player.frame$.subscribe(faces => {
+      this.interpolatedFaces = faces;
+    });
+  }  
 
   stop() {
     this.isPlaying = false;
     this.player.stop();
+    this.interpolatedFaces = null;
   }
-
+  
   get activeIndex() {
     console.log(this.previewIndex)
     return this.isPlaying
     ? this.selectedIndex
     : (this.previewIndex ?? this.selectedIndex);
   } 
+
+  get facesToDisplay() {
+    // 🎞 lecture fluide
+    if (this.interpolatedFaces && this.interpolatedFaces.length) {
+      return this.interpolatedFaces;
+    }
+  
+    // 🕒 mode normal / preview
+    const index = this.activeIndex;
+    return this.eventsSnapshot?.[index]?.payload?.faces ?? [];
+  }  
     
 }
 
