@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+declare var MediaRecorder: any;
+
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+
 import { Observable } from 'rxjs';
 import { SocketEvent, FaceDetectedPayload } from 'src/app/models/socket-event.model';
 import { EventStoreService } from 'src/app/services/event-store.service';
@@ -11,7 +14,7 @@ import { UiStateService } from 'src/app/services/ui-state.service';
   styleUrls: ['./history-timeline.component.scss']
 })
 
-export class HistoryTimelineComponent {
+export class HistoryTimelineComponent implements AfterViewInit {
   events$: Observable<SocketEvent<FaceDetectedPayload>[]>;
   isPlaying = false;
 
@@ -22,6 +25,15 @@ export class HistoryTimelineComponent {
   eventsSnapshot: SocketEvent<FaceDetectedPayload>[] = [];
 
   speed = 1; 
+
+  @ViewChild('playerCanvas')
+  playerCanvas!: ElementRef<HTMLCanvasElement>;
+
+  private ctx!: CanvasRenderingContext2D;
+
+  private mediaRecorder?: any;
+  private recordedChunks: Blob[] = [];
+
 
   constructor(
     private eventStore: EventStoreService,
@@ -34,6 +46,17 @@ export class HistoryTimelineComponent {
       this.eventsSnapshot = events;
       this.selectedIndex = events.length - 1;
     });
+  }
+
+  @ViewChild('playerCanvas')  
+  set canvasRef(el: ElementRef<HTMLCanvasElement>) {
+    if (!el) return;
+
+    this.playerCanvas = el;
+    const ctx = el.nativeElement.getContext('2d');
+    if (ctx) {
+      this.ctx = ctx;
+    }
   }
 
   /** Click timeline */
@@ -207,24 +230,35 @@ export class HistoryTimelineComponent {
 
   play(events: SocketEvent<FaceDetectedPayload>[]) {
     this.isPlaying = true;
-  
-    // 🔥 activer le mode fluide
     this.player.mode = 'INTERPOLATED';
   
     this.player.play(
       events,
-      2 * this.speed, // 🎯 vitesse appliquée ici
+      2 * this.speed,
       (event, index) => {
         this.selectedIndex = index;
         this.preview(event);
+  
+        if (event.snapshot) {
+          this.drawFrame(
+            event.snapshot,
+            this.interpolatedFaces ?? event.payload.faces,
+            event.audit?.hash
+          );
+        }
       }
-    );  
+    );
   
     this.player.frame$.subscribe(faces => {
       this.interpolatedFaces = faces;
+  
+      const e = this.eventsSnapshot[this.selectedIndex];
+      if (e?.snapshot) {
+        this.drawFrame(e.snapshot, faces ?? [], e.audit?.hash);
+      }
     });
-  }  
-
+  }
+  
   stop() {
     this.isPlaying = false;
     this.player.stop();
@@ -252,6 +286,92 @@ export class HistoryTimelineComponent {
   setSpeed(value: number) {
     this.speed = value;
   }  
+
+  recordReplay() {
+    const canvas = this.playerCanvas.nativeElement;
+    const stream = (canvas as any).captureStream(30); // 30 FPS
+  
+    this.recordedChunks = [];
+    this.mediaRecorder = new MediaRecorder(stream, {
+      mimeType: 'video/webm; codecs=vp9'
+    });
+  
+    this.mediaRecorder.ondataavailable = (e: any) => {
+      if (e.data.size) {
+        this.recordedChunks.push(e.data);
+      }
+    };
+  
+    this.mediaRecorder.onstop = () => {
+      const blob = new Blob(this.recordedChunks, {
+        type: 'video/webm'
+      });
+  
+      this.download(blob, `replay_${Date.now()}.webm`);
+    };
+  
+    this.mediaRecorder.start();
+  
+    // ▶️ rejouer automatiquement
+    this.play(this.eventsSnapshot);
+  
+    // ⏹ stop à la fin
+    const duration =
+      this.eventsSnapshot.length *
+      (500 / this.speed);
+  
+    setTimeout(() => {
+      this.mediaRecorder?.stop();
+    }, duration + 500);
+  }  
+
+  private drawFrame(
+    snapshot: string,
+    faces: any[],
+    hash?: string
+  ) {
+    console.log(snapshot)
+    const canvas = this.playerCanvas.nativeElement;
+    const ctx = this.ctx;
+  
+    const img = new Image();
+    img.src = snapshot;
+  
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      // 🖼 image
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  
+      // 🟩 bbox
+      ctx.strokeStyle = '#00ff88';
+      ctx.lineWidth = 2;
+  
+      faces.forEach(face => {
+        const { x, y, width, height } = face.box;
+        ctx.strokeRect(
+          x * canvas.width,
+          y * canvas.height,
+          width * canvas.width,
+          height * canvas.height
+        );
+      });
+  
+      // 🔐 watermark + hash
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+  
+      ctx.fillStyle = '#fff';
+      ctx.font = '12px monospace';
+      ctx.fillText(
+        `AYDA • ${hash ?? 'no-hash'}`,
+        10,
+        canvas.height - 10
+      );
+    };
+  }
+  
+  ngAfterViewInit() {}
     
 }
 

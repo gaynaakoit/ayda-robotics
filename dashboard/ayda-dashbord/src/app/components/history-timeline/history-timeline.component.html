@@ -1,3 +1,26 @@
+<!-- 🎞 MINI PLAYER (Replay + Export vidéo) -->
+<div class="player-wrapper">
+
+  <canvas
+    *ngIf="isPlaying || previewIndex !== null"
+    #playerCanvas
+    width="640"
+    height="360"
+    class="player-canvas"
+  ></canvas>
+
+  <div class="player-export">
+    <button
+      class="btn-record"
+      (click)="recordReplay()"
+      [disabled]="!eventsSnapshot.length"
+    >
+      🎥 Export vidéo
+    </button>
+  </div>
+
+</div>
+
 <div class="timeline">
 
   <!-- ⏱ Slider temporel -->
