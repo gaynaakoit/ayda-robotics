@@ -21,7 +21,7 @@ import { LiveShellComponent } from './components/live-shell/live-shell.component
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 
 const config: SocketIoConfig = {
-  url: 'http://localhost:3000',
+  url: 'http://199.247.10.184:3000',
   options: {
     transports: ['websocket'], // 🔥 force websocket
   },
