@@ -7,7 +7,7 @@
     } from '@nestjs/websockets';
     import { Server, Socket } from 'socket.io';
     import { v4 as uuid } from 'uuid';
-  import { FaceDetectedDto } from './dto/face-event.dto';
+  import { FaceDetectedDto, EventDto } from './dto/face-event.dto';
 
     @WebSocketGateway({ cors: { origin: '*' } })
     export class EventsGateway
@@ -28,7 +28,7 @@
         console.log('🔴 Client déconnecté:', client.id);
       }
     
-      emitFaceDetected(faces: FaceDetectedDto) {
+      /*emitFaceDetected(faces: FaceDetectedDto) {
         console.log('📡 gateway active', 'events', {
           id: uuid(),
           type: 'FACE_DETECTED',
@@ -45,6 +45,16 @@
           timestamp: new Date().toISOString(),
           payload: faces
         });
+      }*/
+
+      emitEvent(event: EventDto) {
+        console.log('📡 Envoi event via WS:', event.type);
+        this.server.emit('events', event);
+      }
+
+      // ✅ compatibilité legacy (si Angular l’utilise encore)
+      emitFaceDetected(event: EventDto) {
+        this.emitEvent(event);
       }
     }
     
