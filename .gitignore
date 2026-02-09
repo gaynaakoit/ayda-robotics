@@ -18,3 +18,29 @@ logs/
 __pycache__/
 *.pyc
 .venv/
+
+# =========================
+# UNITY
+# =========================
+
+robot/[Ll]ibrary/
+robot/[Tt]emp/
+robot/[Oo]bj/
+robot/[Bb]uild/
+robot/[Bb]uilds/
+robot/[Ll]ogs/
+robot/UserSettings/
+
+# Autres
+*.csproj
+*.unityproj
+*.sln
+*.user
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
