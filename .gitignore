@@ -23,13 +23,13 @@ __pycache__/
 # UNITY
 # =========================
 
-robot/[Ll]ibrary/
-robot/[Tt]emp/
-robot/[Oo]bj/
-robot/[Bb]uild/
-robot/[Bb]uilds/
-robot/[Ll]ogs/
-robot/UserSettings/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
 
 # Autres
 *.csproj
